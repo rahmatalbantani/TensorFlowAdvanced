@@ -57,7 +57,8 @@ def run(model: str, max_results: int, score_threshold: float,
 
       detection_result_list.append(result)
       COUNTER += 1
-
+         
+  
   # Initialize the object detection model
   base_options = python.BaseOptions(model_asset_path=model)
   options = vision.ObjectDetectorOptions(base_options=base_options,
@@ -113,8 +114,8 @@ def main():
       '--model',
       help='Path of the object detection model.',
       required=False,
-#      default='efficientdet_lite0.tflite')
-      default='best.tflite')
+      default='efficientdet_lite0.tflite')
+#      default='best.tflite')
   parser.add_argument(
       '--maxResults',
       help='Max number of detection results.',

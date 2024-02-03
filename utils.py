@@ -35,12 +35,35 @@ def visualize(
     Image with bounding boxes.
   """
   for detection in detection_result.detections:
+    if hasattr(detection, 'bounding_box') and hasattr(detection.bounding_box, 'origin_x') and \
+            hasattr(detection.bounding_box, 'origin_y') and hasattr(detection.bounding_box, 'width') and \
+            hasattr(detection.bounding_box, 'height'):
+         
+        x_center = int((detection.bounding_box.origin_x + detection.bounding_box.width/2))
+        y_center = int((detection.bounding_box.origin_y + detection.bounding_box.height/2))
+        confidence_score = detection.categories[0].score
+    else:
+        x_center=-1
+        y_center=-1
+        confidence_score = 0.0
+    if hasattr(detection, 'categories') and detection.categories:
+        category_name = detection.categories[0].category_name
+    else:
+        category_name = "Unknown"
+        
+    print("Category: {}, Center X: {}, Center Y: {}, Confidence: {}".format(category_name, x_center, y_center, confidence_score))
+
+    
     # Draw bounding_box
     bbox = detection.bounding_box
     start_point = bbox.origin_x, bbox.origin_y
     end_point = bbox.origin_x + bbox.width, bbox.origin_y + bbox.height
     # Use the orange color for high visibility.
     cv2.rectangle(image, start_point, end_point, (255, 0, 255), 3)
+    # Draw a circle on the image if the center coordinates are valid
+    if 0 <= x_center < bbox.width and 0 <= y_center < bbox.height and confidence_score > 0.2:
+        cv2.circle(image, (x_center, y_center), radius=10, color=(0, 255, 0), thickness=-1)    
+
 
     # Draw label and score
     category = detection.categories[0]
