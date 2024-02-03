@@ -1,18 +1,3 @@
-# Copyright 2023 The MediaPipe Authors. All Rights Reserved.
-#
-# Licensed under the Apache License, Version 2.0 (the "License");
-# you may not use this file except in compliance with the License.
-# You may obtain a copy of the License at
-#
-#     http://www.apache.org/licenses/LICENSE-2.0
-#
-# Unless required by applicable law or agreed to in writing, software
-# distributed under the License is distributed on an "AS IS" BASIS,
-# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-# See the License for the specific language governing permissions and
-# limitations under the License.
-"""Main scripts to run object detection."""
-
 import argparse
 import sys
 import time
@@ -24,11 +9,17 @@ from mediapipe.tasks import python
 from mediapipe.tasks.python import vision
 
 from utils import visualize
+from picamera2 import Picamera2
 
 # Global variables to calculate FPS
 COUNTER, FPS = 0, 0
 START_TIME = time.time()
-
+picam2 = Picamera2()
+picam2.preview_configuration.main.size = (640,480)
+picam2.preview_configuration.main.format = "RGB888"
+picam2.preview_configuration.align()
+picam2.configure("preview")
+picam2.start()
 
 def run(model: str, max_results: int, score_threshold: float, 
         camera_id: int, width: int, height: int) -> None:
@@ -43,10 +34,7 @@ def run(model: str, max_results: int, score_threshold: float,
     height: The height of the frame captured from the camera.
   """
 
-  # Start capturing video input from the camera
-  cap = cv2.VideoCapture(0)
-  cap.set(cv2.CAP_PROP_FRAME_WIDTH, width)
-  cap.set(cv2.CAP_PROP_FRAME_HEIGHT, height)
+
 
   # Visualization parameters
   row_size = 50  # pixels
@@ -69,7 +57,8 @@ def run(model: str, max_results: int, score_threshold: float,
 
       detection_result_list.append(result)
       COUNTER += 1
-
+         
+  
   # Initialize the object detection model
   base_options = python.BaseOptions(model_asset_path=model)
   options = vision.ObjectDetectorOptions(base_options=base_options,
@@ -80,15 +69,11 @@ def run(model: str, max_results: int, score_threshold: float,
 
 
   # Continuously capture images from the camera and run inference
-  while cap.isOpened():
-    success, image = cap.read()
-    image=cv2.resize(image,(640,480))
-    if not success:
-      sys.exit(
-          'ERROR: Unable to read from webcam. Please verify your webcam settings.'
-      )
-
-    image = cv2.flip(image, 1)
+  while True:
+    im= picam2.capture_array()  
+#    success, image = cap.read()
+    image=cv2.resize(im,(640,480))
+    image = cv2.flip(image, -1)
 
     # Convert the image from BGR to RGB as required by the TFLite model.
     rgb_image = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)
