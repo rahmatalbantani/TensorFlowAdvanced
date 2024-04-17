@@ -16,7 +16,7 @@ def on_press(key):
             ret, frame = camera.read()
 
             # Simpan frame sebagai gambar
-            photo_filename = '/home/pipod/Desktop/Project/Model/Korban_{}.jpg'.format(strftime('%Y%m%d%H%M%S'))
+            photo_filename = '/home/pipod/Desktop/Project/TensorFlowAdvanced/Model/Korban_{}.jpg'.format(strftime('%Y%m%d%H%M%S'))
             cv2.imwrite(photo_filename, frame)
 
             print("Photo captured: {}".format(photo_filename))

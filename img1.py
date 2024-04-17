@@ -18,11 +18,11 @@ while cpt < maxFrames:
     im = cv2.flip(im, -1)
     cv2.imshow("Camera", im)
 
-    key = cv2.waitKey(1)
+    key = cv2.waitKey(2)
 
     if key == ord('p') and not capturing:
         # Capture an image and save it
-        cv2.imwrite('/home/pipod/Desktop/Project/TensorFlowAdvanced/model/korban_uno_%d.jpg' % cpt, im)
+        cv2.imwrite('/home/pipod/Desktop/Project/TensorFlowAdvanced/Model_with_dummy/korban_%d.jpg' % cpt, im)
         print("Image captured and saved.")
         cpt += 1
 

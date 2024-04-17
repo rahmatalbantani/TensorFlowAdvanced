@@ -20,6 +20,7 @@ picam2.preview_configuration.main.format = "RGB888"
 picam2.preview_configuration.align()
 picam2.configure("preview")
 picam2.start()
+time.sleep(2)
 
 def run(model: str, max_results: int, score_threshold: float, 
         camera_id: int, width: int, height: int) -> None:
@@ -114,8 +115,8 @@ def main():
       '--model',
       help='Path of the object detection model.',
       required=False,
-      default='efficientdet_lite0.tflite')
-#      default='best.tflite')
+#      default='efficientdet_lite0.tflite')
+      default='/home/pipod/Desktop/Project/TensorFlowAdvanced/best.tflite')
   parser.add_argument(
       '--maxResults',
       help='Max number of detection results.',
